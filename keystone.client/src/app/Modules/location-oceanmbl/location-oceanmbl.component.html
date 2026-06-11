@@ -2,9 +2,12 @@
   <div class="row" style="background-color: #DFE8F6;">
     <div class="col-md-8">
       <span><b>Location Ocean MBL</b></span>
+      <span *ngIf="totalRows > 0" style="margin-left: 16px; font-size: 0.85em; color: #555;">
+        {{ totalRows | number }} rows
+      </span>
     </div>
     <div class="col-md-4">
-      <button style="margin-left:90%;">
+      <button style="margin-left:90%;" (click)="exportToExcel()" title="Export to Excel">
         <img src="../../../assets/logo/excel_button.png" style="width:25px; height:25px;" />
       </button>
     </div>
@@ -16,19 +19,13 @@
                        class="ag-theme-balham text-end cell-text-align mt-3"
                        [columnDefs]="columnDefs"
                        [defaultColDef]="defaultColDef"
+                       [rowData]="rowData"
                        [rowHeight]="40"
                        [overlayLoadingTemplate]="overlayLoadingTemplate"
-                       overlayNoRowsTemplate="<span>Not matches found or Data set to large</span>"
+                       overlayNoRowsTemplate="<span>No matches found or data set too large</span>"
+                       [getRowClass]="getRowClass"
                        (gridReady)="onGridReady($event)">
       </ag-grid-angular>
-    </div>
-  </div>
-  <div class="row" style="align-items:center; align-content:center; ">
-    <div class="col-md-6" style="display:flex; justify-content:flex-end;">
-      <button class="buttonGrid">link</button>
-    </div>
-    <div class="col-md-6">
-      <button class="buttonGrid fa fa-search-plus"></button>
     </div>
   </div>
 </div>
