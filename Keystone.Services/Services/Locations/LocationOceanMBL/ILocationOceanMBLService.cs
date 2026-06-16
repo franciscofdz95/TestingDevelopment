@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Keystone.DAL.Model.Params;
 
 namespace Keystone.Services.Services.Locations.LocationOceanMBL
 {
-    internal interface ILocationOceanMBLService
+    public interface ILocationOceanMBLService
     {
+        Task<IEnumerable<Dictionary<string, object>>> GetLocationOceanMBLReport(LocationOceanMBLParams filters);
     }
 }

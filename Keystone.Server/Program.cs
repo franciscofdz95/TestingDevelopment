@@ -8,6 +8,7 @@ using Keystone.Services.Services.Email;
 using Keystone.Services.Services.MultiUpload;
 using Keystone.Services.Services.Filters;
 using Keystone.Services.Services.Locations.LocationShipment;
+using Keystone.Services.Services.Locations.LocationOceanMBL;
 using Keystone.Services.Services.Reports;
 using Keystone.Services.Services.Session;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -73,6 +74,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<ILocationShipmentService, LocationShipmentService>();
+builder.Services.AddScoped<ILocationOceanMBLService, LocationOceanMBLService>();
 builder.Services.AddScoped<IFilterService, FilterService>();
 //Repositories
 builder.Services.AddScoped<IBillsService, BillsService>();
