@@ -1,31 +1,32 @@
 <div>
-  <div class="row" style="background-color: #DFE8F6;">
-    <div class="col-md-8">
+  <div class="row grid-title-bar">
+    <div class="col">
       <span><b>Location Ocean MBL</b></span>
-      <span *ngIf="totalRows > 0" style="margin-left: 16px; font-size: 0.85em; color: #555;">
-        {{ totalRows | number }} rows
-      </span>
+      <span *ngIf="totalRows > 0" style="margin-left: 10px; font-size: 12px;">({{totalRows}} records)</span>
     </div>
-    <div class="col-md-4">
-      <button style="margin-left:90%;" (click)="exportToExcel()" title="Export to Excel">
-        <img src="../../../assets/logo/excel_button.png" style="width:25px; height:25px;" />
+    <div class="col-auto">
+      <button class="export-btn" (click)="exportToExcel()" title="Export to Excel">
+        <img src="../../../assets/logo/excel_button.png" style="width:25px; height:25px;"/>
       </button>
     </div>
   </div>
-  <div class="row" style="height:750px;">
-    <div class="col-md-12">
-      <ag-grid-angular #agGrid
-                       style="width: 100%; height: 90%;"
-                       class="ag-theme-balham text-end cell-text-align mt-3"
-                       [columnDefs]="columnDefs"
-                       [defaultColDef]="defaultColDef"
-                       [rowData]="rowData"
-                       [rowHeight]="40"
-                       [overlayLoadingTemplate]="overlayLoadingTemplate"
-                       overlayNoRowsTemplate="<span>No matches found or data set too large</span>"
-                       [getRowClass]="getRowClass"
-                       (gridReady)="onGridReady($event)">
-      </ag-grid-angular>
-    </div>
+  <div class="grid-container">
+    <ag-grid-angular #agGrid
+                     style="width: 100%; height: 100%;"
+                     class="ag-theme-balham flote-grid"
+                     [rowData]="rowData"
+                     [columnDefs]="columnDefs"
+                     [defaultColDef]="defaultColDef"
+                     [rowHeight]="25"
+                     [headerHeight]="32"
+                     [getRowClass]="getRowClass"
+                     [pagination]="true"
+                     [paginationPageSize]="20"
+                     [paginationPageSizeSelector]="[20, 50, 100]"
+                     [overlayLoadingTemplate]="overlayLoadingTemplate"
+                     overlayNoRowsTemplate="<span>No matches found or Data set too large</span>"
+                     (gridReady)="onGridReady($event)"
+                     (paginationChanged)="onPaginationChanged()">
+    </ag-grid-angular>
   </div>
 </div>

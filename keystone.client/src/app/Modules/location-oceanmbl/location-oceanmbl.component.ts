@@ -39,6 +39,13 @@ export class LocationOceanmblComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   totalRows: number = 0;
 
+  // Pagination
+  currentPage: number = 1;
+  totalPages: number = 1;
+  pageSize: number = 20;
+  displayFrom: number = 0;
+  displayTo: number = 0;
+
   constructor(
     private locationOceanMBLService: LocationOceanMBLService,
     private executeService: ExecuteService
@@ -95,13 +102,14 @@ export class LocationOceanmblComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.rowData = data;
-          this.totalRows = data.length > 0 ? (data[0].TotalRows ?? data.length) : 0;
+          this.totalRows = data.length;
           this.isLoading = false;
           if (this.gridApi) {
             this.gridApi.hideOverlay();
             if (data.length === 0) {
               this.gridApi.showNoRowsOverlay();
             }
+            this.gridApi.setGridOption('pinnedBottomRowData', [this.calculateGrandTotal(data)]);
             setTimeout(() => this.gridApi.autoSizeAllColumns(), 100);
           }
         },
@@ -116,6 +124,24 @@ export class LocationOceanmblComponent implements OnInit, OnDestroy {
       });
   }
 
+  private calculateGrandTotal(data: any[]): any {
+    const sumFields = [
+      'ShipmentCount',
+      'ManifestedSellAmtUSD', 'ManifestedBuyAmtUSD', 'Man_Diff',
+      'UnManifestedSellAmtUSD', 'UnManifestedBuyAmtUSD', 'Loc_Diff',
+      'BalanceSheetAmtUSD', 'Tot_Diff'
+    ];
+
+    const totals: any = { mbl_depart_date: 'Grand Total' };
+    sumFields.forEach(field => {
+      totals[field] = data.reduce((sum, row) => {
+        const val = parseFloat(row[field]);
+        return sum + (isNaN(val) ? 0 : val);
+      }, 0);
+    });
+    return totals;
+  }
+
   exportToExcel(): void {
     if (this.gridApi) {
       this.gridApi.exportDataAsCsv({
@@ -128,6 +154,16 @@ export class LocationOceanmblComponent implements OnInit, OnDestroy {
     this.gridApi = params.api;
     if (this.rowData && this.rowData.length > 0) {
       setTimeout(() => this.gridApi.autoSizeAllColumns(), 100);
+    }
+  }
+
+  onPaginationChanged(): void {
+    if (this.gridApi) {
+      this.currentPage = this.gridApi.paginationGetCurrentPage() + 1;
+      this.totalPages = this.gridApi.paginationGetTotalPages();
+      this.pageSize = this.gridApi.paginationGetPageSize();
+      this.displayFrom = (this.currentPage - 1) * this.pageSize + 1;
+      this.displayTo = Math.min(this.currentPage * this.pageSize, this.totalRows);
     }
   }
 
