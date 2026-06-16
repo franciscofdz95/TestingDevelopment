@@ -95,7 +95,7 @@ export class LocationOceanmblComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.rowData = data;
-          this.totalRows = data.length;
+          this.totalRows = data.length > 0 ? (data[0].TotalRows ?? data.length) : 0;
           this.isLoading = false;
           if (this.gridApi) {
             this.gridApi.hideOverlay();
@@ -119,13 +119,13 @@ export class LocationOceanmblComponent implements OnInit, OnDestroy {
 
   private calculateGrandTotal(data: any[]): any {
     const sumFields = [
-      'shipment_count',
-      'mansellAmt', 'manbuyAmt', 'mandiff',
-      'localsellAmt', 'localbuyAmt', 'localdiff',
-      'totaldiff'
+      'ShipmentCount',
+      'ManifestedSellAmtUSD', 'ManifestedBuyAmtUSD', 'Man_Diff',
+      'UnManifestedSellAmtUSD', 'UnManifestedBuyAmtUSD', 'Loc_Diff',
+      'BalanceSheetAmtUSD', 'Tot_Diff'
     ];
 
-    const totals: any = { mbl_departdate: 'Grand Total' };
+    const totals: any = { mbl_depart_date: 'Grand Total' };
     sumFields.forEach(field => {
       totals[field] = data.reduce((sum, row) => {
         const val = parseFloat(row[field]);
@@ -191,32 +191,33 @@ export class LocationOceanmblComponent implements OnInit, OnDestroy {
   };
 
   columnDefs: (ColDef | ColGroupDef)[] = [
-    { headerName: 'MBL Depart Date', field: 'mbl_departdate', valueFormatter: this.dateFormatter, width: 140 },
-    { headerName: 'Location', field: 'location', width: 110 },
-    { headerName: 'MBL Origin Port', field: 'mbl_originport', width: 130 },
-    { headerName: 'MBL Destination Port', field: 'mbl_destinationport', width: 150 },
-    { headerName: 'MBL Number', field: 'mblNumber', hide: true },
-    { headerName: 'O/D', field: 'od', width: 70 },
-    { headerName: 'I/U', field: 'iu', width: 70 },
-    { headerName: 'O/A', field: 'oa', width: 70 },
-    { headerName: 'Cost Basis Code', field: 'cost_basiscode', width: 120 },
-    { headerName: 'Shipment Count', field: 'shipment_count', width: 120, cellStyle: { textAlign: 'right' } },
+    { headerName: 'MBL Depart Date', field: 'mbl_depart_date', valueFormatter: this.dateFormatter, width: 140 },
+    { headerName: 'Location', field: 'location_code', width: 110 },
+    { headerName: 'MBL Origin Port', field: 'mbl_orig_port', width: 130 },
+    { headerName: 'MBL Destination Port', field: 'mbl_dest_port', width: 150 },
+    { headerName: 'MBL Number', field: 'mbl_nbr', hide: true },
+    { headerName: 'O/D', field: 'OD_ind', width: 70 },
+    { headerName: 'Charge Status', field: 'Charge_Status', width: 110 },
+    { headerName: 'Invoice Status', field: 'Invoice_Status', width: 110 },
+    { headerName: 'Cost Basis', field: 'mbl_cost_basis', width: 110 },
+    { headerName: 'Shipment Count', field: 'ShipmentCount', width: 120, cellStyle: { textAlign: 'right' } },
     {
       headerName: 'Manifested (USD)',
       children: [
-        { headerName: 'Sell Amt', field: 'mansellAmt', width: 120, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
-        { headerName: 'Buy Amt', field: 'manbuyAmt', width: 120, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
-        { headerName: 'Diff', field: 'mandiff', width: 110, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
+        { headerName: 'Sell Amt', field: 'ManifestedSellAmtUSD', width: 120, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
+        { headerName: 'Buy Amt', field: 'ManifestedBuyAmtUSD', width: 120, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
+        { headerName: 'Diff', field: 'Man_Diff', width: 110, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
       ]
     },
     {
-      headerName: 'Local (USD)',
+      headerName: 'Un-Manifested (USD)',
       children: [
-        { headerName: 'Sell Amt', field: 'localsellAmt', width: 120, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
-        { headerName: 'Buy Amt', field: 'localbuyAmt', width: 120, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
-        { headerName: 'Diff', field: 'localdiff', width: 110, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
+        { headerName: 'Sell Amt', field: 'UnManifestedSellAmtUSD', width: 120, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
+        { headerName: 'Buy Amt', field: 'UnManifestedBuyAmtUSD', width: 120, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
+        { headerName: 'Diff', field: 'Loc_Diff', width: 110, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
       ]
     },
-    { headerName: 'Total Diff Amt (USD)', field: 'totaldiff', width: 150, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
+    { headerName: 'Balance Sheet (USD)', field: 'BalanceSheetAmtUSD', width: 140, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
+    { headerName: 'Total Diff (USD)', field: 'Tot_Diff', width: 130, valueFormatter: this.numberFormatter, cellStyle: { textAlign: 'right' } },
   ];
 }
