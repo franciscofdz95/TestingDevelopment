@@ -102,7 +102,6 @@ export class LocationOceanmblComponent implements OnInit, OnDestroy {
             if (data.length === 0) {
               this.gridApi.showNoRowsOverlay();
             }
-            this.gridApi.setGridOption('pinnedBottomRowData', [this.calculateGrandTotal(data)]);
             setTimeout(() => this.gridApi.autoSizeAllColumns(), 100);
           }
         },
@@ -115,24 +114,6 @@ export class LocationOceanmblComponent implements OnInit, OnDestroy {
           }
         }
       });
-  }
-
-  private calculateGrandTotal(data: any[]): any {
-    const sumFields = [
-      'ShipmentCount',
-      'ManifestedSellAmtUSD', 'ManifestedBuyAmtUSD', 'Man_Diff',
-      'UnManifestedSellAmtUSD', 'UnManifestedBuyAmtUSD', 'Loc_Diff',
-      'BalanceSheetAmtUSD', 'Tot_Diff'
-    ];
-
-    const totals: any = { mbl_depart_date: 'Grand Total' };
-    sumFields.forEach(field => {
-      totals[field] = data.reduce((sum, row) => {
-        const val = parseFloat(row[field]);
-        return sum + (isNaN(val) ? 0 : val);
-      }, 0);
-    });
-    return totals;
   }
 
   exportToExcel(): void {
